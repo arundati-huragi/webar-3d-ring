@@ -76,7 +76,7 @@ Through this project, I gained hands-on experience with modern web technologies,
 
 ## Demo
 
-Experience the live application: [https://arundati-huragi.github.io/3d-ring-webAR/]
+Experience the live application: [https://arundati-huragi.github.io/webar-3d-ring/]
 
 I'm passionate about web development and AR/VR technologies. 
 - GitHub: [arundati-huragi](https://github.com/arundati-huragi)
