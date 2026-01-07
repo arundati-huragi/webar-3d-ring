@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Jewelry Box AR</title>
+
+  <script src="https://aframe.io/releases/1.7.1/aframe.min.js"></script>
+
+  <!-- COMPONENTS -->
+  <script src="./components/ring-focus.js"></script>
+  <script src="./components/drag-rotate.js"></script>
+  <script src="./components/auto-rotate.js"></script>
+  <script src="./components/camera-focus.js"></script>
+  <script src="./components/state-manager.js"></script>
+  <script src="./components/metal-enhance.js"></script>
+
+  <script>
+    function resetRing(activeRing) {
+      // Reset active ring position and scale
+      if (activeRing && activeRing.originalPosition && activeRing.originalScale) {
+        activeRing.object3D.scale.copy(activeRing.originalScale);
+        activeRing.object3D.position.copy(activeRing.originalPosition);
+      }
+      window.activeRing = null;
+
+      // Re-enable all rings
+      document.querySelectorAll('[ring-focus]').forEach(ring => {
+        ring.classList.add('clickable');
+        ring.setAttribute('material', 'opacity: 1');
+        ring.setAttribute('auto-rotate', '');
+      });
+      // Hide reset button
+      const resetButton = document.querySelector('#resetButton');
+      if (resetButton) resetButton.style.display = 'none';
+    }
+  </script>
+
+  <style>
+    #resetButton {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      background: #813cc1;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      z-index: 1000;
+      display: none;
+    }
+  </style>
+
+  <button id="resetButton" onclick="resetRing(window.activeRing)">RESET</button>
+</head>
+
+<body>
+  <a-entity
+  environment="src: assets/hdr/studio.hdr; shadow: true; ground: flat; groundColor: #ffffff; groundColor2: #ffffff">
+</a-entity>
+
+
+<a-scene renderer="
+  colorManagement: true;
+  physicallyCorrectLights: true;
+  exposure: 1.45;
+  antialias: true;
+  precision: high">
+
+  <!-- HDR BACKGROUND -->
+  <a-sky src="assets\hdr\studio.hdr"></a-sky>
+
+
+  <!-- CAMERA -->
+  <a-camera
+  position="0 1.2 2.8"
+  look-controls
+  cursor="rayOrigin: mouse"
+  raycaster="objects: .clickable">
+  
+  <!-- FIXED CLOSE BUTTON (HUD) -->
+</a-camera>
+
+  <!-- FIXED RESET BUTTON (HUD) -->
+  <a-entity
+  id="resetButton"
+  class="clickable"
+  position="-0.9 0.45 -1"
+  position="0 1.5 1.8"
+  look-at="[camera]"
+  visible="false"
+  geometry="primitive: plane; width: 0.2; height: 0.18"
+  material="color:#111; opacity:0.95"
+  text="value: RESET; align:center; color:#fff; width:1"
+  animation__hover="property: scale; startEvents: mouseenter; to: 1.1 1.1 1"
+  animation__leave="property: scale; startEvents: mouseleave; to: 1 1 1"
+  onclick="resetRing(window.activeRing)">
+</a-entity>
+
+
+  
+
+</a-camera>
+
+
+
+  <!-- ASSETS -->
+  <a-assets>
+    <a-asset-item id="boxModel" src="jewelry-box-ar/boxx.glb"></a-asset-item>
+    <a-asset-item id="goldRing" src="jewelry-box-ar\gold_ringg.glb"></a-asset-item>
+    <a-asset-item id="diamondRing" src="jewelry-box-ar\daimond_ringg.glb"></a-asset-item>
+    <a-asset-item id="silverRing" src="jewelry-box-ar\silver_ringg.glb"></a-asset-item>
+  </a-assets>
+
+  <!-- LIGHTING -->
+  <a-light type="ambient" intensity="0.45"></a-light>
+  <a-light type="directional" intensity="3.5" position="3 5 3"></a-light>
+  <a-light type="point" intensity="2.5" position="0 2 -2"></a-light>
+
+  <a-light
+    type="point"
+    intensity="4"
+    position="0 1 1">
+  </a-light>
+  <!-- DIAMOND SPARKLE LIGHT -->
+<a-light
+  type="point"
+  color="#ffffff"
+  intensity="6"
+  distance="5"
+  position="0 1.2 0.8"
+  animation="
+    property: position;
+    dur: 3000;
+    loop: true;
+    dir: alternate;
+    easing: easeInOutSine;
+    to: 0 1.4 -0.6">
+</a-light>
+
+<a-light
+  id="glintLight"
+  type="point"
+  color="#ffffff"
+  intensity="3.8"
+  position="0 1.2 0.6"
+  animation="
+    property: position;
+    dur: 3000;
+    easing: easeInOutSine;
+    loop: true;
+    dir: alternate;
+    to: 0 1.2 -0.8">
+</a-light>
+
+
+
+  <!-- ================= BOX + RING SETS ================= -->
+
+  <!-- GOLD -->
+  <a-entity position="-3 0 -3">
+    <a-entity
+      gltf-model="jewelry-box-ar/boxx.glb"
+      scale="10 10 10">
+    </a-entity>
+
+    <a-plane
+  rotation="-90 0 0"
+  position="0 -0.01 0"
+  width="0.9"
+  height="0.9"
+  material="color:#000; opacity:0.25"
+  shadow>
+</a-plane>
+
+
+    <a-entity
+      class="clickable"
+      gltf-model="jewelry-box-ar\gold_ringg.glb"
+      position="0 0.8 0"
+      scale="0.18 0.18 0.18"
+      material="
+  metalness: 1;
+  roughness: 0.08;
+  envMapIntensity: 2.5" 
+  envMapIntensity: 2.5"
+       ring-focus
+state-manager
+        camera-focus
+        metal-enhance
+      drag-rotate
+      auto-rotate
+      ="property: position; dir: alternate; dur: 1800; loop: true; to: 0 0.9 0">
+      animation="property: position; dir: alternate; dur: 1800; loop: true; to: 0 0.9 0">
+    </a-entity>
+  </a-entity>
+
+  <!-- DIAMOND -->
+  <a-entity position="0 0 -3">
+    <a-entity
+      gltf-model="jewelry-box-ar/boxx.glb"
+      scale="10 10 10">
+    </a-entity>
+
+    <a-entity
+      class="clickable"
+      gltf-model="jewelry-box-ar\daimond_ringg.glb"
+      position="0 0.85 0"
+      scale="0.2 0.2 0.2"
+      
+
+      animation__sparkle="
+  property: material.emissiveIntensity;
+  from: 0.05;
+  to: 0.35;
+  dur: 900;
+  dir: alternate;
+  loop: true;
+  easing: easeInOutSine"
+      material="
+  emissive: #ffffff;
+  emissiveIntensity: 0.1"
+material="
+  metalness: 0;
+  roughness: 0.02;
+  transmission: 1;
+  thickness: 0.6;
+  envMapIntensity: 3.2"
+      ring-focus
+      state-manager
+      metal-enhance
+
+        camera-focus
+      drag-rotate
+      auto-rotate
+      ="property: position; dir: alternate; dur: 2000; loop: true; to: 0 0.95 0">
+      animation="property: position; dir: alternate; dur: 2000; loop: true; to: 0 0.95 0">
+    </a-entity>
+  </a-entity>
+
+  <!-- SILVER -->
+  <a-entity position="3 0 -3">
+    <a-entity
+      gltf-model="jewelry-box-ar/boxx.glb"
+      scale="10 10 10">
+    </a-entity>
+
+    <a-entity
+      class="clickable"
+      gltf-model="jewelry-box-ar/silver_ringg.glb"
+      position="0 0.9 0"
+      scale="0.1 0.15 0.15"
+      position="0.02 0.95 0"
+      scale="0.15 0.12 0.12"
+material="
+  metalness: 1;
+  roughness: 0.12;
+  envMapIntensity: 2.8"
+      ring-focus
+      camera-focus
+      state-manager
+      drag-rotate
+      auto-rotate
+      ="property: position; dir: alternate; dur: 2200; loop: true; to: 0 0.9 0">
+      animation="property: position; dir: alternate; dur: 2200; loop: true; to: 0 0.9 0">
+    </a-entity>
+  </a-entity>
+
+  <!-- CLOSE BUTTON -->
+  
+
+
+</a-scene>
+</body>
+</html>
